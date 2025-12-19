@@ -4,91 +4,44 @@ import com.game.boards.TickTackToeBoard;
 import com.game.my_game.Board;
 import com.game.my_game.GameResult;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 public class RuleEngine {
     public GameResult getSate(Board board) {
         if (board instanceof TickTackToeBoard) {
             TickTackToeBoard tttBoard1 = (TickTackToeBoard) board;
             // check for tick-tack toe completion
-            String firstCell = "-";
-            boolean rowComplete = true;
-            for (int i = 0; i < 3; i++) {
-                // check row
-                firstCell = tttBoard1.getCell(i,0); // get cell value at (i,0)
-                rowComplete = firstCell == null ? false : true;
-                if (firstCell != null) {
-                    for (int j = 1; j < 3; j++) {
-                        // check columns
-                        if (!firstCell.equals(tttBoard1.getCell(i,j))) {
-                            rowComplete = false;
-                            break;
-                        }
-                    }
-                }
+            BiFunction<Integer, Integer, String> getNextRow = (i, j) -> tttBoard1.getCell(i, j);
+            BiFunction<Integer, Integer, String> getNextCol = (i, j) -> tttBoard1.getCell(j, i);
 
-                if (rowComplete) {
-                    return new GameResult(true, firstCell); // return winning result
-                }
+            GameResult rowWin = isVictory(getNextRow);
+            if (rowWin.isOver()) {
+                return rowWin;
             }
 
-            if (rowComplete) {
-                return new GameResult(true, firstCell);
-            }
-
-            // check for column completion
-            boolean colComplete = true;
-            for (int j = 0; j < 3; j++) {
-                // check column
-                firstCell = tttBoard1.getCell(0,j); // get cell value at (0,j)
-                colComplete = firstCell == null ? false : true;
-                if (firstCell != null) {
-                    for (int i = 1; i < 3; i++) {
-                        if (!firstCell.equals(tttBoard1.getCell(i, j))) {
-                            colComplete = false;
-                            break;
-                        }
-                    }
-
-                    if (colComplete) {
-                        return new GameResult(true, firstCell); // return winning result
-                    }
-                }
-            }
-
-            if (colComplete) {
-                return new GameResult(true, firstCell); // return winning result
+            GameResult colWin = isVictory(getNextCol);
+            if (colWin.isOver()) {
+                return colWin;
             }
 
             // check for diagonal completion
-            firstCell = tttBoard1.getCell(0,0);
-            boolean diag1Complete = firstCell == null ? false : true;
-            for (int i = 1; i < 3; i++) {
-                if (firstCell != null &&  !firstCell.equals(tttBoard1.getCell(i,i))) {
-                    diag1Complete = false;
-                    break;
-                }
+            Function<Integer, String> getNextDiag = (i) -> tttBoard1.getCell(i, i);
+            GameResult diagWin = isDiagVictory(getNextDiag);
+            if (diagWin.isOver()) {
+                return diagWin;
             }
 
-            if (diag1Complete) {
-                return new GameResult(true, firstCell); // return winning result
-            }
-
-            firstCell = tttBoard1.getCell(0,2);
-            boolean diag2Complete = firstCell == null ? false : true;
-            for (int i = 1; i < 3; i++) {
-                if (firstCell != null && !firstCell.equals(tttBoard1.getCell(i,2 - i))) {
-                    diag2Complete = false;
-                    break;
-                }
-            }
-
-            if (diag2Complete) {
-                return new GameResult(true, firstCell); // return winning result
+            Function<Integer, String> getNextReverseDiag = (i) -> tttBoard1.getCell(i, 2 - i);
+            GameResult reverseDiagWin = isDiagVictory(getNextReverseDiag);
+            if (reverseDiagWin.isOver()) {
+                return reverseDiagWin;
             }
 
             int countFilledCells = 0;
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
-                    if (tttBoard1.getCell(i,j) != null) {
+                    if (tttBoard1.getCell(i, j) != null) {
                         countFilledCells++;
                     }
                 }
@@ -101,6 +54,41 @@ public class RuleEngine {
             }
         } else {
             return new GameResult(false, ""); // unknown board type
+        }
+    }
+
+    public static GameResult isVictory(BiFunction<Integer, Integer, String> getNextCharacter) {
+        boolean possibleStreak = true;
+        for (int i = 0; i < 3; i++) {
+            possibleStreak = true;
+            for (int j = 0; j < 3; j++) {
+                if (getNextCharacter.apply(i,j) == null || !getNextCharacter.apply(i,0).equals(getNextCharacter.apply(i,j))) {
+                    possibleStreak = false;
+                    break;
+                }
+            }
+
+            if (possibleStreak) {
+                return new GameResult(true, getNextCharacter.apply(i,0)); // return winning result
+            }
+        }
+
+        return new GameResult(false, null); // game not over yet
+    }
+
+    public GameResult isDiagVictory(Function<Integer, String> getNext) {
+        boolean possibleStreak = true;
+        for (int i = 0; i < 3; i++) {
+            if (getNext.apply(i) == null || !getNext.apply(0).equals(getNext.apply(i))) {
+                possibleStreak = false;
+                break;
+            }
+        }
+
+        if (possibleStreak) {
+            return new GameResult(true, getNext.apply(0)); // return winning result
+        } else {
+            return new GameResult(false, null); // game not over yet
         }
     }
 }
