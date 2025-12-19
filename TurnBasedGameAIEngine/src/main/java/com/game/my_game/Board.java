@@ -1,5 +1,7 @@
 package com.game.my_game;
 
-public class Board {
+import static java.nio.file.Files.move;
 
+public abstract class Board {
+    public abstract void move(Move move);
 }

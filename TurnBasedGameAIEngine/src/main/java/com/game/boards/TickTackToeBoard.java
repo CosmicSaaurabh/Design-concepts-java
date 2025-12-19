@@ -2,16 +2,25 @@ package com.game.boards;
 
 import com.game.my_game.Board;
 import com.game.my_game.Cell;
+import com.game.my_game.Move;
+import com.game.my_game.Player;
 
 public class TickTackToeBoard extends Board {
-    protected String cells[][] = new String[3][3];
+    private String cells[][] = new String[3][3];
 
     public String getCell(int row, int col) {
         return cells[row][col];
     }
 
-    public void setCell(Cell cell, String value) {
+    private void setCell(Cell cell, String value) {
         cells[cell.getRow()][cell.getCol()] = value;
+    }
+
+    @Override
+    public void move(Move move) {
+        Cell cell = move.getCell();
+        Player player = move.getPlayer();
+        setCell(cell, player.getPlayerSymbol());
     }
 
     @Override
