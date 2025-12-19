@@ -5,7 +5,7 @@ import com.game.my_game.Cell;
 import com.game.my_game.Move;
 import com.game.my_game.Player;
 
-public class TickTackToeBoard extends Board {
+public class TickTackToeBoard implements Board {
     private String cells[][] = new String[3][3];
 
     public String getCell(int row, int col) {
@@ -13,6 +13,10 @@ public class TickTackToeBoard extends Board {
     }
 
     private void setCell(Cell cell, String value) {
+        if (getCell(cell.getRow(), cell.getCol()) != null) {
+            throw new IllegalArgumentException("Cell is already occupied");
+        }
+
         cells[cell.getRow()][cell.getCol()] = value;
     }
 
@@ -21,6 +25,15 @@ public class TickTackToeBoard extends Board {
         Cell cell = move.getCell();
         Player player = move.getPlayer();
         setCell(cell, player.getPlayerSymbol());
+    }
+
+    @Override
+    public TickTackToeBoard copy() {
+        TickTackToeBoard newBoard = new TickTackToeBoard();
+        for (int i = 0; i < 3; i++) {
+            System.arraycopy(this.cells[i], 0, newBoard.cells[i], 0, 3);
+        }
+        return newBoard;
     }
 
     @Override
