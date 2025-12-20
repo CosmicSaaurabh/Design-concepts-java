@@ -33,6 +33,7 @@ public class GamePlayTest {
 
             System.out.println(board.toString());
             GameResult gameResult = ruleEngine.getSate(board);
+            System.out.println(gameResult.getWinner());
             if (!gameResult.isOver()) {
                 // computer move after player move
                 int srow = secondPlayerMoves[next][0], scol = secondPlayerMoves[next][1];

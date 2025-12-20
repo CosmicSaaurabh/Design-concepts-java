@@ -4,39 +4,51 @@ import com.game.boards.TickTackToeBoard;
 import com.game.my_game.Board;
 import com.game.my_game.GameResult;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class RuleEngine {
+    Map<String, List<Rule>> ruleMap = new HashMap<>();
+
+    public RuleEngine() {
+        // initialize rules for different board types
+        ruleMap.put(TickTackToeBoard.class.getName(), new ArrayList<>());
+    }
     public GameResult getSate(Board board) {
         if (board instanceof TickTackToeBoard) {
             TickTackToeBoard tttBoard1 = (TickTackToeBoard) board;
+//            List<Rule> rules = ruleMap.get(TickTackToeBoard.class.getName());
+//            for (Rule rule: rules) {
+//                if (rule.conditions.apply(tttBoard1)) {
+//                    // return rule result
+//                    // return new GameResult(true, "X"); // example
+//                }
+//            }
             // check for tick-tack toe completion
             BiFunction<Integer, Integer, String> getNextRow = (i, j) -> tttBoard1.getCell(i, j);
+
+            GameResult rowWin = OuterTraversal(getNextRow);
+            if (rowWin.isOver()) return rowWin;
+
             BiFunction<Integer, Integer, String> getNextCol = (i, j) -> tttBoard1.getCell(j, i);
+            GameResult colWin = OuterTraversal(getNextCol);
+            if (colWin.isOver()) return colWin;
 
-            GameResult rowWin = isVictory(getNextRow);
-            if (rowWin.isOver()) {
-                return rowWin;
-            }
-
-            GameResult colWin = isVictory(getNextCol);
-            if (colWin.isOver()) {
-                return colWin;
-            }
 
             // check for diagonal completion
             Function<Integer, String> getNextDiag = (i) -> tttBoard1.getCell(i, i);
-            GameResult diagWin = isDiagVictory(getNextDiag);
-            if (diagWin.isOver()) {
-                return diagWin;
-            }
+            GameResult diagWin = Traversal(getNextDiag);
+            if (diagWin.isOver()) return diagWin;
+
 
             Function<Integer, String> getNextReverseDiag = (i) -> tttBoard1.getCell(i, 2 - i);
-            GameResult reverseDiagWin = isDiagVictory(getNextReverseDiag);
-            if (reverseDiagWin.isOver()) {
-                return reverseDiagWin;
-            }
+            GameResult reverseDiagWin = Traversal(getNextReverseDiag);
+            if (reverseDiagWin.isOver()) return reverseDiagWin;
+
 
             int countFilledCells = 0;
             for (int i = 0; i < 3; i++) {
@@ -57,38 +69,36 @@ public class RuleEngine {
         }
     }
 
-    public static GameResult isVictory(BiFunction<Integer, Integer, String> getNextCharacter) {
-        boolean possibleStreak = true;
+    public static GameResult OuterTraversal(BiFunction<Integer, Integer, String> getNextCharacter) {
+        GameResult result = new GameResult(false, "-");
         for (int i = 0; i < 3; i++) {
-            possibleStreak = true;
-            for (int j = 0; j < 3; j++) {
-                if (getNextCharacter.apply(i,j) == null || !getNextCharacter.apply(i,0).equals(getNextCharacter.apply(i,j))) {
-                    possibleStreak = false;
-                    break;
-                }
-            }
-
-            if (possibleStreak) {
-                return new GameResult(true, getNextCharacter.apply(i,0)); // return winning result
-            }
-        }
-
-        return new GameResult(false, null); // game not over yet
-    }
-
-    public GameResult isDiagVictory(Function<Integer, String> getNext) {
-        boolean possibleStreak = true;
-        for (int i = 0; i < 3; i++) {
-            if (getNext.apply(i) == null || !getNext.apply(0).equals(getNext.apply(i))) {
-                possibleStreak = false;
+            final int ii = i;
+            GameResult traversal = Traversal(j -> getNextCharacter.apply(ii, j));
+            if (traversal.isOver()) {
+                result = traversal;
                 break;
             }
         }
 
-        if (possibleStreak) {
-            return new GameResult(true, getNext.apply(0)); // return winning result
-        } else {
-            return new GameResult(false, null); // game not over yet
+        return result; // game not over yet
+    }
+
+    public static GameResult Traversal(Function<Integer, String> getNextCharacter) {
+        GameResult result = new GameResult(false, "-");
+        for (int j = 0; j < 3; j++) {
+            if (getNextCharacter.apply(j) == null || !getNextCharacter.apply(0).equals(getNextCharacter.apply(j))) {
+                return result;
+            }
         }
+
+        return new GameResult(true, getNextCharacter.apply(0)); // return winning result
+    }
+}
+
+class Rule {
+    Function<Board, Boolean> conditions;
+
+    Rule(Function<Board, Boolean> conditions) {
+        this.conditions = conditions;
     }
 }
