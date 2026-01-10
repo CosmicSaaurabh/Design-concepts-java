@@ -14,3 +14,10 @@ every other user present.
 Mediator: Chat Server
 Colleagues: Chat participants send messages to mediator which distributes message to every other user.
 
+
+##### Benefits
+
+1. Reduces Complexity :- reduces direct dependencies between objects
+2. Loose Coupling :- Users only interact with mediator, making them easier to manage.
+3. Single Responsibility :- mediator handles logic go complex logic of sending message, keeping users to focus on their behaviour
+4. Centralized control :- Changes to communication rules can be made in mediator without affecting the users.
