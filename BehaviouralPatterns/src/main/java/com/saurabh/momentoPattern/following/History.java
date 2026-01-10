@@ -4,6 +4,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 // Care taker - managing the states - state manager - one responsibility ie manage states
+// History have composition relationship with editor momento, it needs the Editor momento
 public class History {
     private Deque<EditorMomento> history = new ArrayDeque<>();
     public void push(EditorMomento momento) {

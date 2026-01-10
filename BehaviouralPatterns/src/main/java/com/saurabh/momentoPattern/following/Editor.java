@@ -2,6 +2,7 @@ package com.saurabh.momentoPattern.following;
 
 
 // It is called originator, it has method to save current text as a snapshot
+// Originator have a dependency relationship with momento class ie editor momento
 public class Editor {
     private String text = "";
     private History history = new History();
