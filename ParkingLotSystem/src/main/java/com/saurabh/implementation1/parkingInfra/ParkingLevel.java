@@ -1,7 +1,6 @@
-package com.saurabh.implementation1.parkingLevel;
+package com.saurabh.implementation1.parkingInfra;
 
 import com.saurabh.implementation1.ParkingSpot;
-import com.saurabh.implementation1.Vehicle;
 import com.saurabh.implementation1.VehicleType;
 import com.saurabh.implementation1.parkingSpotManager.ParkingSpotManager;
 
@@ -43,5 +42,9 @@ public class ParkingLevel {
     public void unPark(ParkingSpot parkingSpot, VehicleType vehicleType) {
         ParkingSpotManager parkingSpotManager = getParkingSpotManager(vehicleType);
         parkingSpotManager.unPark(parkingSpot);
+    }
+
+    public int getLevelNumber() {
+        return levelNumber;
     }
 }

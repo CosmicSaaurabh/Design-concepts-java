@@ -1,9 +1,8 @@
-package com.saurabh.implementation1.parkingBuilding;
+package com.saurabh.implementation1.parkingInfra;
 
 import com.saurabh.implementation1.ParkingSpot;
 import com.saurabh.implementation1.Ticket;
 import com.saurabh.implementation1.Vehicle;
-import com.saurabh.implementation1.parkingLevel.ParkingLevel;
 
 import java.util.List;
 
@@ -14,18 +13,20 @@ public class ParkingBuilding {
         this.parkingLevelList = parkingLevelList;
     }
 
-    public Ticket allocate(Vehicle vehicle) {
-        ParkingSpot spot = null;
+    Ticket allocate(Vehicle vehicle) {
+        Ticket ticket = null;
         for (ParkingLevel parkingLevel: parkingLevelList){
             if (parkingLevel.hasAvailability(vehicle.getVehicleType())) {
-                spot = parkingLevel.park(vehicle.getVehicleType());
+                ParkingSpot spot = parkingLevel.park(vehicle.getVehicleType());
+                ticket = new Ticket(spot, vehicle, parkingLevel);
             }
         }
 
-        if (spot != null) {
-            return new Ticket(spot);
-        }
-
-        return null;
+        return ticket;
     }
+
+    void release(Ticket ticket) {
+        ticket.getParkingLevel().unPark(ticket.getSpot(), ticket.getVehicle().getVehicleType());
+    }
+
 }

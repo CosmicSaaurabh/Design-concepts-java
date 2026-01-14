@@ -1,8 +1,12 @@
 package com.saurabh.implementation1;
 
 public class ParkingSpot {
-    String spotNumber;
-    boolean isFree;
+    private final String spotNumber;
+    boolean isFree = true;
+
+    public ParkingSpot(String spotNumber) {
+        this.spotNumber = spotNumber;
+    }
 
     public boolean isSpotFree() {
         return isFree;
