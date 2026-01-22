@@ -1,4 +1,4 @@
-package com.saurabh.reentrantLock;
+package com.saurabh.topics.reentrantLock;
 
 import java.util.concurrent.locks.ReentrantLock;
 

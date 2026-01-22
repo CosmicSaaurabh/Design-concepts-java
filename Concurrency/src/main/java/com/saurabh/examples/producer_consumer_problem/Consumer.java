@@ -1,4 +1,4 @@
-package com.saurabh.producer_consumer_problem;
+package com.saurabh.examples.producer_consumer_problem;
 
 public class Consumer extends Thread{
     private final SharedBuffer buffer;

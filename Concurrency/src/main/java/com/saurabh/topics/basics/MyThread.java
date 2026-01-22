@@ -1,4 +1,4 @@
-package com.saurabh;
+package com.saurabh.topics.basics;
 
 public class MyThread extends Thread {
     private int count = 0;

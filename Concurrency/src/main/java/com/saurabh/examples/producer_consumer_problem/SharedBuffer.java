@@ -1,4 +1,4 @@
-package com.saurabh.producer_consumer_problem;
+package com.saurabh.examples.producer_consumer_problem;
 
 import java.util.LinkedList;
 import java.util.Queue;
