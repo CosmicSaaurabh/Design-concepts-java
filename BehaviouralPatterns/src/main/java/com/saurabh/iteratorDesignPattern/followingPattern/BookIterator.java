@@ -1,10 +1,9 @@
 package com.saurabh.iteratorDesignPattern.followingPattern;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
  class BookIterator implements Iterator<Book> {
-    private List<Book> books = new ArrayList<>();
+    private List<Book> books;
     int position = 0;
 
     BookIterator(List<Book> books) {
