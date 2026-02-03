@@ -14,7 +14,7 @@ public class MetricRegistry {
         return (CounterMetric) metrics.computeIfAbsent(metricId, k -> new CounterMetric(metricId));
     }
 
-    public HistogramMetric histogramMetric(String name,Map<String, String> labels, double[] boundaries){
+    public HistogramMetric histogramMetric(String name, Map<String, String> labels, double[] boundaries){
         MetricId metricId = new MetricId(name, labels);
 
         return (HistogramMetric) metrics.computeIfAbsent(metricId, k -> new HistogramMetric(metricId, boundaries));
