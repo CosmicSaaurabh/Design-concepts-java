@@ -21,6 +21,7 @@
     <module>InMemoryCache</module>
     <module>MetricMonitoringSystem</module>
     <module>MusicApplicationDesign</module>
+    <module>MovieTicketSystem</module>
   </modules>
   <dependencies>
     <dependency>
