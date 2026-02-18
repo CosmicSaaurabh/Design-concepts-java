@@ -14,10 +14,18 @@ public class Downloader implements Runnable {
     @Override
     public void run() {
         try {
-            synchronized (System.out) { // Synchronize output to prevent message overlap
+            synchronized (System.out) {
                 System.out.println(Thread.currentThread().getName() + " - Starting download: " + fileName);
             }
-            Thread.sleep(rnd.nextInt(100) + 100); // Simulate time taken to download
+            // TODO: Add a loop that simulates the download in steps, using sleep to indicate progress
+            // TODO: Synchronize the output of each progress step to prevent overlap
+            for (int i = 0; i < 100; i++) {
+                synchronized (System.out) {
+                    System.out.println("Downloading " + i + "% complete - " + fileName);
+                }
+                Thread.sleep(10);
+            }
+
             synchronized (System.out) {
                 System.out.println(Thread.currentThread().getName() + " - Completed download: " + fileName);
             }
@@ -25,6 +33,15 @@ public class Downloader implements Runnable {
             synchronized (System.out) {
                 System.out.println(Thread.currentThread().getName() + " - Download interrupted: " + fileName);
             }
+        }
+    }
+
+    // TODO: Add a synchronized method called pauseDownload() that pauses the thread for 500ms
+    public synchronized void pauseDownload() {
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            System.err.println(e);
         }
     }
 }
